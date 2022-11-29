@@ -13,7 +13,6 @@ class Solution:
         return all_paths.sort(key=self.stupid_change)[0]
 
     def stupid_change(self, item1: list[any], item2: list[any]) -> int:
-        print('kpfdokpofkdsp')
         if len(item1) < len(item2):
             return -1
         elif len(item1) > len(item2):
@@ -48,24 +47,35 @@ class Solution:
     def get_all_paths(self, start_word: str, end_word: str, close_map: dict[str, list[str]]) -> list[list[str]]:
         has_traversed = [start_word]
 
-        return self.gp(start_word, end_word, close_map, has_traversed);
+        return self.gp(start_word, end_word, close_map, has_traversed, []);
 
-    def gp(self, start_word: str, end_word: str, close_map: dict[str, list[str]], has_traversed: list[str]) -> list[list[str]]:
+    def gp(self, start_word: str, end_word: str, close_map: dict[str, list[str]], has_traversed: list[str], current_path: list[str]) -> list[list[str]]:
         paths = []
         next_words = close_map[start_word]
 
         if len(next_words) == 0:
             return paths
 
+        # paths.append(start_word)
+
         for w in next_words:
             if w in has_traversed: continue
-            if w == end_word: return paths
 
             has_traversed.append(w)
-            paths = paths + self.gp(w, end_word, close_map, has_traversed)
+            paths.append(w)
+
+            if w == end_word:
+                return paths
+
+            child_path = self.gp(w, end_word, close_map, has_traversed, current_path)
+
+            paths = paths + 
 
         return paths
-        
 
 sol = Solution()
 ladder = sol.findLadders("abc", "abf", ["abc", "abd", "acd", "axy", "abf"])
+
+# {'abc': ['abd', 'abf'], 'abd': ['abc', 'acd', 'abf'], 'acd': ['abd'], 'axy': [], 'abf': ['abc', 'abd']}
+
+[a, ]
