@@ -3,24 +3,11 @@ class Solution:
         if end_word not in word_list: return []
         if begin_word not in word_list: word_list.append(begin_word)
 
-        close_map = self.build_map(word_list)
-        all_paths = self.get_all_paths(begin_word, end_word, close_map)
+        tree = self.build_tree(word_list)
 
-        return self.shortest_arr(all_paths)
+        return self.get_shortest_path(begin_word, end_word, tree)
 
-    def shortest_arr(self, all_paths: list[list[any]]) -> list[str]:
-        print(all_paths)
-        return all_paths.sort(key=self.stupid_change)[0]
-
-    def stupid_change(self, item1: list[any], item2: list[any]) -> int:
-        if len(item1) < len(item2):
-            return -1
-        elif len(item1) > len(item2):
-            return 1
-        else:
-            return 0
-
-    def build_map(self, word_list: list[str]) -> dict:
+    def build_tree(self, word_list: list[str]) -> dict:
         m = {}
 
         for current in word_list:
@@ -44,14 +31,14 @@ class Solution:
 
         return diff == 1
 
-    def get_all_paths(self, start_word: str, end_word: str, close_map: dict[str, list[str]]) -> list[list[str]]:
+    def get_shortest_path(self, start_word: str, end_word: str, tree: dict[str, list[str]]) -> list[list[str]]:
         has_traversed = [start_word]
 
-        return self.gp(start_word, end_word, close_map, has_traversed, []);
+        return self.old_gp(start_word, end_word, tree, has_traversed, []);
 
-    def gp(self, start_word: str, end_word: str, close_map: dict[str, list[str]], has_traversed: list[str], current_path: list[str]) -> list[list[str]]:
+    def old_gp(self, start_word: str, end_word: str, tree: dict[str, list[str]], has_traversed: list[str], current_path: list[str]) -> list[list[str]]:
         paths = []
-        next_words = close_map[start_word]
+        next_words = tree[start_word]
 
         if len(next_words) == 0:
             return paths
@@ -62,20 +49,20 @@ class Solution:
             if w in has_traversed: continue
 
             has_traversed.append(w)
-            paths.append(w)
 
             if w == end_word:
+                paths.append(w)
                 return paths
 
-            child_path = self.gp(w, end_word, close_map, has_traversed, current_path)
+            child_path = self.old_gp(w, end_word, tree, has_traversed, current_path)
 
-            paths = paths + 
+            if end_word in child_path:
+                paths = paths
 
         return paths
 
-sol = Solution()
-ladder = sol.findLadders("abc", "abf", ["abc", "abd", "acd", "axy", "abf"])
+ladder = Solution().findLadders("aa", "xx", ["aa", "ax", "xx"])
+
+print(ladder)
 
 # {'abc': ['abd', 'abf'], 'abd': ['abc', 'acd', 'abf'], 'acd': ['abd'], 'axy': [], 'abf': ['abc', 'abd']}
-
-[a, ]
