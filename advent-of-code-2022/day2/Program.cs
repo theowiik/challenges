@@ -12,14 +12,40 @@ foreach (var line in File.ReadLines(path))
   var opponent = line.Split(" ").First().ToShape();
   var me = line.Split(" ").Last();
 
-  sum += GameExtensions.RoundScore(opponent, me.ToShape()) + me.ToShape().ToScore();
-  secret += GameExtensions.SecretStrategy(opponent, me);
+  sum += RoundScore(opponent, me.ToShape()) + me.ToShape().ToScore();
+  secret += RoundScoreSecretStrategy(opponent, me);
 }
 
 Console.WriteLine("Part one: " + sum);
 Console.WriteLine("Part two: " + secret);
 
-public static class GameExtensions
+int RoundScore(Shape opponent, Shape me)
+{
+  if (me == opponent) return 3;
+
+  if (me == Shape.Paper && opponent == Shape.Rock) return 6;
+  if (me == Shape.Scissor && opponent == Shape.Paper) return 6;
+  if (me == Shape.Rock && opponent == Shape.Scissor) return 6;
+
+  return 0;
+}
+
+int RoundScoreSecretStrategy(Shape opponent, string me)
+{
+  switch (me)
+  {
+    case "X":
+      return 0 + opponent.GetLosing().ToScore();
+    case "Y":
+      return 3 + opponent.ToScore();
+    case "Z":
+      return 6 + opponent.GetWinning().ToScore();
+    default:
+      throw new Exception();
+  }
+}
+
+public static class ShapeExtensions
 {
   public static Shape ToShape(this string str)
   {
@@ -43,16 +69,6 @@ public static class GameExtensions
     };
   }
 
-  public static int RoundScore(Shape opponent, Shape me)
-  {
-    if (me == opponent) return 3;
-
-    if (me == Shape.Paper && opponent == Shape.Rock) return 6;
-    if (me == Shape.Scissor && opponent == Shape.Paper) return 6;
-    if (me == Shape.Rock && opponent == Shape.Scissor) return 6;
-
-    return 0;
-  }
 
   public static Shape GetLosing(this Shape s)
   {
@@ -74,21 +90,6 @@ public static class GameExtensions
       Shape.Scissor => Shape.Rock,
       _ => throw new Exception()
     };
-  }
-
-  public static int SecretStrategy(Shape opponent, string me)
-  {
-    switch (me)
-    {
-      case "X":
-        return 0 + opponent.GetLosing().ToScore();
-      case "Y":
-        return 3 + opponent.ToScore();
-      case "Z":
-        return 6 + opponent.GetWinning().ToScore();
-      default:
-        throw new Exception();
-    }
   }
 }
 
