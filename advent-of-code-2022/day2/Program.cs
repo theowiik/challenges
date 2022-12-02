@@ -3,19 +3,8 @@ using System.Reflection;
 var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"data.dat");
 
 var sum = 0;
-foreach (var line in File.ReadLines(path))
-{
-  if (string.IsNullOrWhiteSpace(line)) continue;
+var secret = 0;
 
-  var opponent = line.Split(" ").First().ToShape();
-  var me = line.Split(" ").Last().ToShape();
-
-  sum += GameExtensions.RoundScore(opponent, me) + me.ToScore();
-}
-
-Console.WriteLine("Part one: " + sum);
-
-sum = 0;
 foreach (var line in File.ReadLines(path))
 {
   if (string.IsNullOrWhiteSpace(line)) continue;
@@ -23,10 +12,12 @@ foreach (var line in File.ReadLines(path))
   var opponent = line.Split(" ").First().ToShape();
   var me = line.Split(" ").Last();
 
-  sum += GameExtensions.RoundScorePartTwo(opponent, me);
+  sum += GameExtensions.RoundScore(opponent, me.ToShape()) + me.ToShape().ToScore();
+  secret += GameExtensions.SecretStrategy(opponent, me);
 }
 
-Console.WriteLine("Part two: " + sum);
+Console.WriteLine("Part one: " + sum);
+Console.WriteLine("Part two: " + secret);
 
 public static class GameExtensions
 {
@@ -85,7 +76,7 @@ public static class GameExtensions
     };
   }
 
-  public static int RoundScorePartTwo(Shape opponent, string me)
+  public static int SecretStrategy(Shape opponent, string me)
   {
     switch (me)
     {
