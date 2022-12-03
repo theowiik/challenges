@@ -68,18 +68,14 @@ func getPoints(findMe string, list []string) int {
 	isCap := findMe == strings.ToUpper(findMe)
 
 	for i, v := range list {
-
 		if v == strings.ToUpper(findMe) {
 			if isCap {
-				score := 26 + (i + 1)
-				println("Found", findMe, "with score", score)
-				return score
+				return 26 + i + 1
 			} else {
-				score := (i + 1)
-				return score
+				return i + 1
 			}
 		}
 	}
 
-	return -1
+	panic("No point found")
 }
