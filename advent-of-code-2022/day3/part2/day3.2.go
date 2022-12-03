@@ -15,15 +15,28 @@ func main() {
 	fileScanner.Split(bufio.ScanLines)
 
 	sum := 0
+	i := 0
+	three := make([]string, 3)
 	for fileScanner.Scan() {
 		current := fileScanner.Text()
 
-		l := len(current)
-		first := current[0 : l/2]
-		second := current[l/2 : l]
+		if i%3 == 0 {
+			three[0] = current
+		} else if i%3 == 1 {
+			three[1] = current
+		} else if i%3 == 2 {
+			three[2] = current
+		}
 
-		dupe := findDuplicate(first, second)
+		if i%3 != 2 {
+			i++
+			continue
+		}
+		i++
+
+		dupe := findDuplicate(three[0], three[1], three[2])
 		sum += getPoints(dupe, alphabet)
+
 	}
 
 	readFile.Close()
@@ -31,15 +44,19 @@ func main() {
 	println(sum)
 }
 
-func findDuplicate(s1 string, s2 string) string {
+func findDuplicate(s1 string, s2 string, s3 string) string {
 	a1 := strings.Split(s1, "")
 	a2 := strings.Split(s2, "")
+	a3 := strings.Split(s3, "")
 
-	// No contains in go? 😳
+	// Could be done with a map, but this is more fun 😈
+	// (and dont care about performance here as I am just learning golang)
 	for _, v := range a1 {
 		for _, v2 := range a2 {
-			if v == v2 {
-				return v
+			for _, v3 := range a3 {
+				if v == v2 && v == v3 {
+					return v
+				}
 			}
 		}
 	}
