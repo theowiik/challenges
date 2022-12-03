@@ -21,5 +21,6 @@ foreach (var c in challenges)
   catch (Exception e)
   {
     Console.WriteLine("Ouchie :(");
+    throw;
   }
 }
