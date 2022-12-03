@@ -69,7 +69,6 @@ public static class ShapeExtensions
     };
   }
 
-
   public static Shape GetLosing(this Shape s)
   {
     return s switch
