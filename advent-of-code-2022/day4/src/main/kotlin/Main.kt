@@ -1,6 +1,6 @@
 import java.io.File
 
-fun main(args: Array<String>) {
+fun main() {
   val path = getResourcePath("data.dat") ?: throw Exception("File does not exist")
 
   var fullyWithin = 0
