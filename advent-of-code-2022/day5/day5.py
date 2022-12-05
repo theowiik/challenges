@@ -1,6 +1,6 @@
 import pprint
 
-pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter(indent=2)
 
 
 def to_instruction(row):
@@ -15,17 +15,16 @@ f = open('data', 'r')
 for l in f:
     if l.startswith("move"):
         moves.append(to_instruction(l))
-    elif "[" in l:
+        continue
+
+    if "[" in l:
 
         i = 0
         size = len(l)
         while i < size:
             if "[" in l[i:i+3]:
-                while len(stacks) <= i / 4:
-                    stacks.append([])
-
+                while len(stacks) <= i / 4: stacks.append([])
                 stacks[int(i/4)].insert(0, l[i:i+3][1])
-
             i += 4
 
 f.close()
@@ -52,4 +51,4 @@ final = ""
 for stack in stacks:
     final += stack.pop()
 
-print('Final: ' + final)
+print('\nFinal: ' + final)
