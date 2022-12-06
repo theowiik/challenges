@@ -4,12 +4,7 @@ const line = fs.readFileSync('data').toString();
 const daySix = (data, length) => {
   for (let i = 0; i < data.length; i++) {
     const subPart = data.substring(i, i + length).split('');
-
-    const hasDupe = subPart.some(
-      (c) => subPart.indexOf(c) !== subPart.lastIndexOf(c)
-    );
-
-    if (!hasDupe) return i + length;
+    if (new Set(subPart).size === subPart.length) return i + length;
   }
 };
 
