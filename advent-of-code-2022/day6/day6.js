@@ -5,18 +5,31 @@ const line = fs.readFileSync('data').toString();
 // "0 1234 56789" // 1 + 4 = 5
 
 let i = 0;
+const finished = { partOne: false, partTwo: false };
 
 for (char in line) {
-  const subPart = line.substring(i, i + 4).split('');
+  const startOfPacket = line.substring(i, i + 4).split('');
+  const startOfMessage = line.substring(i, i + 14).split('');
 
-  const hasDupe = subPart.some(
-    (c) => subPart.indexOf(c) !== subPart.lastIndexOf(c)
+  const hasStartOfPacket = startOfPacket.some(
+    (c) => startOfPacket.indexOf(c) !== startOfPacket.lastIndexOf(c)
   );
 
-  if (!hasDupe) {
+  const hasStartOfMessage = startOfMessage.some(
+    (c) => startOfMessage.indexOf(c) !== startOfMessage.lastIndexOf(c)
+  );
+
+  if (!hasStartOfPacket && !finished.partOne) {
     console.log(`Part 1: ${i + 4}`);
-    break;
+    finished.partOne = true;
   }
+
+  if (!hasStartOfMessage && !finished.partTwo) {
+    console.log(`Part 2: ${i + 14}`);
+    finished.partTwo = true;
+  }
+
+  if (finished.partOne && finished.partTwo) break;
 
   i++;
 }
