@@ -9,7 +9,7 @@ void PrintComment(int day)
   Console.WriteLine($"--------- Day {day} ---------");
 }
 
-var challenges = new List<IAdventChallenge>() { new DayOne(), new DayTwo(), new DayThree() };
+var challenges = new List<IAdventChallenge>() { new DayOne(), new DayTwo(), new DayThree(), new DaySeven() };
 
 foreach (var c in challenges)
 {
