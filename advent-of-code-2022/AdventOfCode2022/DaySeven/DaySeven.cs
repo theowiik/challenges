@@ -17,9 +17,6 @@ public sealed class DaySeven : IAdventChallenge
     public Node Parent { get; set; }
   }
 
-  // 3 541 190 to high
-  // 3 541 180 wrong
-
   public void Run()
   {
     var root = BuildTree();
@@ -29,7 +26,6 @@ public sealed class DaySeven : IAdventChallenge
     var total = all
       .Where(c => c.DirSize <= 100_000 && c.IsDir)
       .Sum(c => c.DirSize);
-
     Console.WriteLine("Part 1: " + total);
 
     var neededToDelete = 30_000_000 - 70_000_000 - root.DirSize;
