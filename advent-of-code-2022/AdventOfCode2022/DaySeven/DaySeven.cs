@@ -30,9 +30,11 @@ public sealed class DaySeven : IAdventChallenge
       .Where(c => c.DirSize <= 100_000 && c.IsDir)
       .Sum(c => c.DirSize);
 
-    var superTotal = all.Sum(x => x.DirSize);
-
     Console.WriteLine("Part 1: " + total);
+
+    var neededToDelete = 30_000_000 - 70_000_000 - root.DirSize;
+    var best = all.OrderBy(d => d.DirSize).First(d => d.DirSize >= neededToDelete);
+    Console.WriteLine("Part 2: " + best.DirSize);
   }
 
   private Node BuildTree()
@@ -45,14 +47,12 @@ public sealed class DaySeven : IAdventChallenge
     {
       if (line.StartsWith("$ cd .."))
       {
-        Console.WriteLine(line + " going up a dir");
         current = current.Parent;
         continue;
       }
 
       if (line.StartsWith("$ cd /"))
       {
-        Console.WriteLine(line + " going to root");
         current = root;
         continue;
       }
@@ -60,8 +60,6 @@ public sealed class DaySeven : IAdventChallenge
       if (line.StartsWith("$ cd"))
       {
         var go = line.Split(" ")[2];
-
-        Console.WriteLine(line + " going to dir " + go);
 
         var notAdded = current.Children.All(c => c.Name != go);
         if (notAdded) current.Children.Add(new Node { Name = go, Parent = current });
