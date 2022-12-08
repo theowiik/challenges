@@ -9,18 +9,28 @@ public sealed class DaySeven : IAdventChallenge
   private class Node
   {
     public string Name { get; set; }
-    public int FileSize { get; set; } = -1;
-    public int DirSize { get; set; } = -1;
+    public int FileSize { get; set; }
+    public int DirSize { get; set; }
     public IList<Node> Children { get; } = new List<Node>();
-    public bool IsDir => FileSize == -1;
+    public bool IsDir => FileSize == 0;
+    public bool IsFile => !IsDir;
     public Node Parent { get; set; }
   }
+
+  // 3 541 190 to high
+  // 3 541 180 wrong
 
   public void Run()
   {
     var root = BuildTree();
-    MeasureSizesRec(root);
-    var total = AllDirUnder(root, 100_000).Sum(c => c.DirSize);
+    CalculateDirectorySizes(root);
+
+    var all = AllDirectories(root);
+    var total = all
+      .Where(c => c.DirSize <= 100_000 && c.IsDir)
+      .Sum(c => c.DirSize);
+
+    var superTotal = all.Sum(x => x.DirSize);
 
     Console.WriteLine("Part 1: " + total);
   }
@@ -35,12 +45,14 @@ public sealed class DaySeven : IAdventChallenge
     {
       if (line.StartsWith("$ cd .."))
       {
+        Console.WriteLine(line + " going up a dir");
         current = current.Parent;
         continue;
       }
 
       if (line.StartsWith("$ cd /"))
       {
+        Console.WriteLine(line + " going to root");
         current = root;
         continue;
       }
@@ -48,6 +60,8 @@ public sealed class DaySeven : IAdventChallenge
       if (line.StartsWith("$ cd"))
       {
         var go = line.Split(" ")[2];
+
+        Console.WriteLine(line + " going to dir " + go);
 
         var notAdded = current.Children.All(c => c.Name != go);
         if (notAdded) current.Children.Add(new Node { Name = go, Parent = current });
@@ -62,47 +76,45 @@ public sealed class DaySeven : IAdventChallenge
       }
 
       // Is currently listing directories and files
-      var isNumber = int.TryParse(line.Split(" ").First(), out var fileSize);
-
-      if (isNumber)
+      if (int.TryParse(line.Split(" ").First(), out var fileSize))
       {
         var fileName = line.Split(" ")[1];
         var alreadyHasFile = current.Children.Any(c => c.Name == fileName && !c.IsDir);
         if (alreadyHasFile) continue;
 
-        current.Children.Add(new Node() { Name = fileName, FileSize = fileSize, Parent = current });
+        current.Children.Add(new Node { Name = fileName, FileSize = fileSize, Parent = current });
       }
     }
 
     return root;
   }
 
-  private static IEnumerable<Node> AllDirUnder(Node root, int maxSize)
+  private static IEnumerable<Node> AllDirectories(Node root)
   {
     if (!root.IsDir) return Array.Empty<Node>();
+    var all = new List<Node> { root };
 
-    var all = new List<Node>();
-    var children = root.Children.Where(c => c.IsDir && c.FileSize <= maxSize);
-    all.AddRange(children);
+    var childrenDirectories = root.Children.Where(c => c.IsDir);
 
-    foreach (var child in children)
+    foreach (var childDir in childrenDirectories)
     {
-      all.AddRange(AllDirUnder(child, maxSize));
+      all.Add(childDir);
+      all.AddRange(AllDirectories(childDir));
     }
 
-    return all;
+    return all.Distinct();
   }
 
-  private void MeasureSizesRec(Node root)
+  private static void CalculateDirectorySizes(Node root)
   {
     if (!root.IsDir) return;
 
     foreach (var child in root.Children)
     {
-      MeasureSizesRec(child);
+      CalculateDirectorySizes(child);
     }
 
-    var childrenFileSizes = root.Children.Where(c => !c.IsDir).Select(c => c.FileSize).Sum();
+    var childrenFileSizes = root.Children.Where(c => c.IsFile).Select(c => c.FileSize).Sum();
     var childrenDirSizes = root.Children.Where(c => c.IsDir).Select(c => c.DirSize).Sum();
 
     root.DirSize = childrenFileSizes + childrenDirSizes;
