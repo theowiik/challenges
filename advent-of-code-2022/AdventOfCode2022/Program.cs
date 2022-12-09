@@ -1,4 +1,5 @@
 ﻿using AdventOfCode2022;
+using AdventOfCode2022.DayEight;
 using AdventOfCode2022.DayOne;
 using AdventOfCode2022.DayThree;
 using AdventOfCode2022.DayTwo;
@@ -9,7 +10,8 @@ void PrintComment(int day)
   Console.WriteLine($"--------- Day {day} ---------");
 }
 
-var challenges = new List<IAdventChallenge>() { new DayOne(), new DayTwo(), new DayThree(), new DaySeven() };
+var challenges = new List<IAdventChallenge>
+  { new DayOne(), new DayTwo(), new DayThree(), new DaySeven(), new DayEight() };
 
 foreach (var c in challenges)
 {
